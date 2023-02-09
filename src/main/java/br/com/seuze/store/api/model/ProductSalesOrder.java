@@ -1,5 +1,7 @@
 package br.com.seuze.store.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,17 +14,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "product_sold")
+@Table(name = "product_sales_order")
 @Data
 @Builder
 @AllArgsConstructor @NoArgsConstructor
-public class ProductSold {
+public class ProductSalesOrder {
+	@JsonIgnore
 	@Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "id")
 	private Long id;
 	
+	@JsonIgnore
 	@Column(name = "order_id", nullable = false) 
 	private Long orderId;
 	
+	@JsonIgnore
 	@Column(name = "sale_id") 
 	private Long saleId;
 	
@@ -38,11 +43,12 @@ public class ProductSold {
 	@Column(name = "price") 
 	private double price;
 	
+	@JsonIgnore
 	@Column(name = "is_sold") 
 	@Builder.Default
 	private boolean isSold = false;
 
-	public ProductSold(String sku) {
+	public ProductSalesOrder(String sku) {
 		this.sku = sku;
 	}
 	

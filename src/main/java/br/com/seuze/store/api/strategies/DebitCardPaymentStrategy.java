@@ -1,16 +1,16 @@
 package br.com.seuze.store.api.strategies;
 
-public class DebitCardPaymentStrategy extends CardPaymentStrategy  {
-	public DebitCardPaymentStrategy(String cardSecurity, String cardNumber, String expirationDate) {
-		super(cardSecurity, cardNumber, expirationDate);
-	}
+import br.com.seuze.store.api.enumerations.PaymentMethod;
+import jakarta.persistence.Entity;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-	@Override
-	public String toString() {
-		return "Debit Card";
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class DebitCardPaymentStrategy extends CardPaymentStrategy  {@Override
+	public PaymentMethod getPaymentMethod() {
+		return PaymentMethod.DEBIT_CARD;
 	}
-	@Override
-	public String description() {
-		return "Payment: Debit Card";
-	}
+	
 }

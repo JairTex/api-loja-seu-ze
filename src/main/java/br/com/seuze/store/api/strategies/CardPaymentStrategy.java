@@ -1,35 +1,21 @@
 package br.com.seuze.store.api.strategies;
 
-abstract class CardPaymentStrategy implements PaymentStrategyStrategy {
-	String cardSecurity;
-	String cardNumber;
-	String expirationDate;
-	
-	public CardPaymentStrategy(String cardSecurity, String cardNumber, String expirationDate) {
-		this.cardSecurity = cardSecurity;
-		this.cardNumber = cardNumber;
-		this.expirationDate = expirationDate;
-	}
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-	@Override
-	public abstract String description();
-	
-	public String getCardSecurity() {
-		return cardSecurity;
-	}
-	public void setCardSecurity(String cardSecurity) {
-		this.cardSecurity = cardSecurity;
-	}
-	public String getCardNumber() {
-		return cardNumber;
-	}
-	public void setCardNumber(String cardNumber) {
-		this.cardNumber = cardNumber;
-	}
-	public String getExpirationDate() {
-		return expirationDate;
-	}
-	public void setExpirationDate(String expirationDate) {
-		this.expirationDate = expirationDate;
-	}
+@MappedSuperclass
+@Data
+@NoArgsConstructor @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public abstract class CardPaymentStrategy extends PaymentStrategy {
+	@Column(name = "card_security") 
+	String cardSecurity;
+	@Column(name = "card_number") 
+	String cardNumber;
+	@Column(name = "expiration_date") 
+	String expirationDate;
 }

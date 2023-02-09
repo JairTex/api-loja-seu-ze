@@ -1,6 +1,5 @@
 package br.com.seuze.store.api.enumerations;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

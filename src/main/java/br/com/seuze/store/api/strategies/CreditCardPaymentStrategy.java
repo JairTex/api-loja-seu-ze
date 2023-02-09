@@ -1,17 +1,16 @@
 package br.com.seuze.store.api.strategies;
 
+import br.com.seuze.store.api.enumerations.PaymentMethod;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public class CreditCardPaymentStrategy extends CardPaymentStrategy { 
-   
-	public CreditCardPaymentStrategy(String cardSecurity, String cardNumber, String expirationDate) {
-		super(cardSecurity, cardNumber, expirationDate);
-	}
-	@Override
-	public String description() {
-		return "Payment: Credit Card";
-	}
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class CreditCardPaymentStrategy extends CardPaymentStrategy {@Override
+	public PaymentMethod getPaymentMethod() {
+		return PaymentMethod.CREDIT_CARD;
+	} 
+	
 }

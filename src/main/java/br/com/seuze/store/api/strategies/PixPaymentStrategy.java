@@ -1,29 +1,29 @@
 package br.com.seuze.store.api.strategies;
 
-public class PixPaymentStrategy implements PaymentStrategyStrategy { 
-	private String key;
-	private Double amount;
+import br.com.seuze.store.api.enumerations.PaymentMethod;
+import br.com.seuze.store.api.enumerations.PixKeyTypeEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+public class PixPaymentStrategy extends PaymentStrategy { 	
+	@Enumerated
+	@Column(name = "pix_key_type")
+	private PixKeyTypeEnum pixKeyType;
 	
-	public PixPaymentStrategy(String key, Double amount) {
-		this.key = key;
-		this.amount = amount;
-	}
+	@Column(name = "pix_key") 
+	private String key;
 
 	@Override
-	public String description() {
-		return "Payment: Pix";
+	public PaymentMethod getPaymentMethod() {
+		return PaymentMethod.PIX;
 	}
-
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public Double getAmount() {
-		return amount;
-	}
-	public void setAmount(Double amount) {
-		this.amount = amount;
-	}
+	
 }

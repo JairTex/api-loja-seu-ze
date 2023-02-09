@@ -1,20 +1,43 @@
 package br.com.seuze.store.api.service;
 
-import java.util.LinkedHashMap;
+import java.util.List;
+import br.com.seuze.store.api.enumerations.ProductBrandEnum;
+import br.com.seuze.store.api.enumerations.ProductCategoryEnum;
+import br.com.seuze.store.api.enumerations.ProductColorEnum;
+import br.com.seuze.store.api.enumerations.ProductDepartmentEnum;
+import br.com.seuze.store.api.enumerations.ProductTypeEnum;
+import br.com.seuze.store.api.model.Product;
+import br.com.seuze.store.api.model.SalesOrder;
 
-public interface ProductServiceInterface {/*
-	public String register(String description, ProductCategory category, ProductDepartment department,
-			ProductType type, ProductColor color, String size, int amount, Double value);
-	public String generateSku(ProductCategory category, ProductDepartment department, ProductType type, ProductColor color);
-	public boolean isValid(Object object);
-	public boolean removeFromStock(String sku, int amount);
-	public boolean addToStock(String sku, int amount);
-	public boolean addProductToBag(String sku, String bagId, int amount) throws CloneNotSupportedException;
-	public Object searchBySku (String sku);
-	public LinkedHashMap<String, Object> searchByCategory (ProductCategory category);
-	public LinkedHashMap<String, Object> searchByDepartment (ProductDepartment department);
-	public LinkedHashMap<String, Object> searchByType (ProductType type);
-	public LinkedHashMap<String, Object> searchByColor (ProductColor color);
-	public LinkedHashMap<String, Object> searchBySize (String size);
-	public ProductData listStock();*/
+public interface ProductServiceInterface {
+	public Product registerProduct(Product product);
+	
+	public String generateSku(Product product);
+	
+	public boolean validateProduct(Product product);
+	
+	public List<Product> listAllProducts();
+	
+	public List<Product> searchBySku(String sku);
+	
+	public List<Product> searchByBrand(ProductBrandEnum brand);
+	
+	public List<Product> searchByCategory(ProductCategoryEnum category);
+	
+	public List<Product> searchByDepartment(ProductDepartmentEnum department);
+	
+	public List<Product> searchByType(ProductTypeEnum type);
+	
+	public List<Product> searchByColor(ProductColorEnum color);
+	
+	public List<Product> searchBySize(int size);
+	
+	public SalesOrder addProductToSalesOrder(String sku, Long orderId, int amount);
+	
+	public SalesOrder removeProductFromSalesOrder(String sku, Long orderId, int amount);
+	
+	public boolean validateSearch(Long orderSaleId, String sku);
+	
+	public Double calculateTotalSalesOrder(SalesOrder salesOrder);
+	
 }

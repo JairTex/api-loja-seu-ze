@@ -1,8 +1,9 @@
 package br.com.seuze.store.api.model;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
-import br.com.seuze.store.api.enumerations.SalePaymentEnum;
+import br.com.seuze.store.api.enumerations.SalesOrderStatusEnum;
+import br.com.seuze.store.api.strategies.PaymentStrategy;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,33 +21,36 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "sale_order")
-@Data
 @Builder
-@AllArgsConstructor @NoArgsConstructor 
-public class SalesOrder {
-	@Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "id")
+@AllArgsConstructor @NoArgsConstructor
+@Data
+public class SalesOrder{
+	@Id 
+	@GeneratedValue(strategy = GenerationType.AUTO) 
+	@Column(name = "id")
 	private Long id;
 	
-	//@OneToMany(cascade = CascadeType.ALL) 
+	@Column(name = "sale_id") 
+	private Long sale_id;
 
 	@OneToMany(cascade = CascadeType.ALL) 
-	private List<ProductSold> bag;
+	private List<ProductSalesOrder> bag;
 	
-	@Column(name = "total", nullable = false) 
+	@Column(name = "total") 
 	private double total;
 	
 	@Column(name = "document") 
 	private String document;
 	
-	@Column(name = "date", insertable=false) 
+	@Column(name = "date") 
 	@Builder.Default
-	private Calendar date = Calendar.getInstance();
+	private LocalDateTime date = LocalDateTime.now();
 	
 	@Enumerated
-	@Column(name = "payment", nullable = false) 
-	private SalePaymentEnum payment;
-	
-	@Column(name = "is_completed") 
+	@Column(name = "status")
 	@Builder.Default
-	private boolean isCompleted = false;
+	private SalesOrderStatusEnum status = SalesOrderStatusEnum.OPEN;
+	
+	@OneToOne(cascade = CascadeType.ALL) 
+	private PaymentStrategy payment;
 }
