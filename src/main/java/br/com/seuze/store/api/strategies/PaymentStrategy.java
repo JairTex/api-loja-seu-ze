@@ -28,9 +28,11 @@ public abstract class PaymentStrategy {
 	@Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "id")
 	private Long id;
 	
+	@JsonIgnore
 	@Column(name = "order_id", nullable = false) 
 	private Long orderId;
 	
+	@JsonIgnore
 	@Column(name = "sale_id") 
 	private Long saleId;
 	

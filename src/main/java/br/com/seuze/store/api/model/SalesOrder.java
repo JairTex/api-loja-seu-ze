@@ -2,6 +2,9 @@ package br.com.seuze.store.api.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.seuze.store.api.enumerations.SalesOrderStatusEnum;
 import br.com.seuze.store.api.strategies.PaymentStrategy;
 import jakarta.persistence.CascadeType;
@@ -30,6 +33,7 @@ public class SalesOrder{
 	@Column(name = "id")
 	private Long id;
 	
+	@JsonIgnore
 	@Column(name = "sale_id") 
 	private Long sale_id;
 

@@ -72,7 +72,7 @@ public class SalesOrderController {
 	}
 	
 	@PostMapping("sales-order/process/{id}")
-	public ResponseEntity<?> processOrderSale(@PathVariable("id") Long id) {
+	public ResponseEntity<?> processSalesOrder(@PathVariable("id") Long id) {
 		try {
 			return new ResponseEntity<>(salesOrderService.processOrderSale(id),
 					HttpStatus.OK);
@@ -94,7 +94,7 @@ public class SalesOrderController {
 	}
 	
 	@PostMapping("sales-order/{paymentMethod}/{id}")
-	public ResponseEntity<?> processSalesOrder(@PathVariable("id") Long id,
+	public ResponseEntity<?> processSalesOrderPayment(@PathVariable("id") Long id,
 			@PathVariable("paymentMethod") String paymentMethod, @RequestBody ObjectNode objectNode) {
 		switch(paymentMethod) {
 			case("cash"):{

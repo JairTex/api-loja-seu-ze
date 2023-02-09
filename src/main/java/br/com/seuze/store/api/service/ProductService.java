@@ -157,11 +157,16 @@ public class ProductService implements ProductServiceInterface{
 			skuSoldList.add(ps.getSku());
 		}
 		
-		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.FINISHED)
-				|| salesOrder.getStatus().equals(SalesOrderStatusEnum.CANCELED)
-				|| salesOrder.getStatus().equals(SalesOrderStatusEnum.PROCESSED)) {
+		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.FINISHED)) {
+			log.info("Client tried add a product in a sales order already finished.");
+			throw new SalesOrderProcessingException("This sales order was finished!");
+		}
+		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.CANCELED)) {
 			log.info("Client tried add a product in a sales order already canceled.");
 			throw new SalesOrderProcessingException("This sales order was canceled!");
+		}
+		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.PROCESSED)) {
+			salesOrder.setStatus(SalesOrderStatusEnum.OPEN);
 		}
 			
 		if(skuSoldList.contains(sku)) {
@@ -194,7 +199,7 @@ public class ProductService implements ProductServiceInterface{
 		return salesOrder;
 	}
 	
-	public SalesOrder removeProductFromSalesOrder(String sku, Long orderId, int amount) {
+	public void removeProduct(String sku, Long orderId, int amount) {
 		validateSearch(orderId, sku);
 		
 		SalesOrder salesOrder = salesOrderRepository.findById(orderId).get();
@@ -212,8 +217,18 @@ public class ProductService implements ProductServiceInterface{
 				salesOrder.getBag().remove(psoList.get(0));
 			}
 		}	
+		
 		calculateTotalSalesOrder(salesOrder);
+	}
 	
+	public SalesOrder removeProductFromSalesOrder(String sku, Long orderId, int amount) {
+		validateSearch(orderId, sku);
+		productCanBeRemoved(orderId, sku);
+		
+		removeProduct(sku, orderId, amount);
+		
+		SalesOrder salesOrder = salesOrderRepository.findById(orderId).get();
+		
 		return salesOrderRepository.save(salesOrder);
 	}
 	
@@ -225,6 +240,18 @@ public class ProductService implements ProductServiceInterface{
 		if(productRepository.findBySku(sku).isEmpty()) {
 			log.info("Product searched by client not found!");
 			throw new ProductNotFountException("This product does not exist!");
+		}
+		return true;
+	}
+	
+	public boolean productCanBeRemoved(Long orderSaleId, String sku) {
+		List<String> skuList = new ArrayList<>();
+		for(ProductSalesOrder pso : salesOrderRepository.findById(orderSaleId).get().getBag()) {
+			skuList.add(pso.getSku());
+		}
+		if(!skuList.contains(sku)) {
+			log.info("Product searched by client not found in Sales Order!");
+			throw new SalesOrderNotFound("This Product does not exist in this Sales Order!");
 		}
 		return true;
 	}

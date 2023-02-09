@@ -141,7 +141,7 @@ public class ProductController {
 		Integer amount = Integer.parseInt(objectNode.get("amount").asText());
 		try {
 			return new ResponseEntity<>(productService.addProductToSalesOrder(sku, orderId, amount),
-					HttpStatus.CREATED);
+					HttpStatus.OK);
 		}catch (RuntimeException e) {
 			return new ResponseEntity<>(e.getMessage(),
 					HttpStatus.BAD_REQUEST);
@@ -155,7 +155,7 @@ public class ProductController {
 		
 		try {
 			return new ResponseEntity<>(productService.removeProductFromSalesOrder(sku, orderId, amount),
-					HttpStatus.CREATED);
+					HttpStatus.OK);
 		}catch (RuntimeException e) {
 			return new ResponseEntity<>(e.getMessage(),
 					HttpStatus.BAD_REQUEST);

@@ -27,6 +27,7 @@ import br.com.seuze.store.api.model.ProductSalesOrder;
 import br.com.seuze.store.api.model.Sale;
 import br.com.seuze.store.api.model.SalesOrder;
 import br.com.seuze.store.api.repository.ProductRepository;
+import br.com.seuze.store.api.repository.ProductSalesOrderRepository;
 import br.com.seuze.store.api.repository.SaleRepository;
 import br.com.seuze.store.api.repository.SalesOrderRepository;
 import br.com.seuze.store.api.strategies.CardPaymentStrategy;
@@ -44,6 +45,8 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 	SaleRepository saleRepository;
 	@Autowired
 	ProductRepository productRepository;
+	@Autowired
+	ProductSalesOrderRepository productSalesOrderRepository;
 	@Autowired
 	ProductService productService;
 	
@@ -76,24 +79,28 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 		
 		salesOrderCanBeProcessed(salesOrder);
 		
+		List<Product> productInStock = new ArrayList<>();
 		for(ProductSalesOrder pso : salesOrder.getBag()) {
-			Product productinStock = productService.searchBySku(pso.getSku()).get(0);
-			if(pso.getAmount() > productinStock.getAmount()) {
-				int excess = pso.getAmount() - productinStock.getAmount();
-				productService.removeProductFromSalesOrder(
-						pso.getSku(), salesOrder.getId(), excess);
+			productInStock.add(productService.searchBySku(pso.getSku()).get(0));
+		}
+		
+		for(int i = 0; i < salesOrder.getBag().size();i++) {
+			if(salesOrder.getBag().get(i).getAmount() > productInStock.get(i).getAmount()) {
+				int excess = salesOrder.getBag().get(i).getAmount() - productInStock.get(i).getAmount();
+				productService.removeProduct( salesOrder.getBag().get(i).getSku(), 
+						salesOrder.getId(), excess);
+				i--;
+			}
+			if(salesOrder.getBag().size()==0){
+				break;
 			}
 		}
 		
-		if(!salesOrder.getBag().isEmpty()) {
-			productService.calculateTotalSalesOrder(salesOrder);
-		} else {
-			salesOrder.setTotal(0);
-		}
+		salesOrderCanBeProcessed(salesOrder);
 		
 		salesOrder.setStatus(SalesOrderStatusEnum.PROCESSED);
-		salesOrderRepository.save(salesOrder);
-		return salesOrder;
+		
+		return salesOrderRepository.save(salesOrder);
 	}
 	
 	public SalesOrder addPaymentMethodCash(Long salesOrderId, CashPaymentStrategy payment) {
@@ -436,6 +443,8 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 		}
 		
 		if(!isValid) {
+			salesOrder.setStatus(SalesOrderStatusEnum.OPEN);
+			salesOrderRepository.save(salesOrder);
 			throw new SalesOrderProcessingException("This sales oder must be processed again!");
 		}
 		
