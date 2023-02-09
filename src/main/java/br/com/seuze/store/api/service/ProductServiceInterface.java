@@ -34,6 +34,8 @@ public interface ProductServiceInterface {
 	
 	public SalesOrder addProductToSalesOrder(String sku, Long orderId, int amount);
 	
+	public boolean ProductCanBeAdded(Long salesOrderSaleId, String sku);
+	
 	public void removeProduct(String sku, Long orderId, int amount);
 	
 	public SalesOrder removeProductFromSalesOrder(String sku, Long orderId, int amount);

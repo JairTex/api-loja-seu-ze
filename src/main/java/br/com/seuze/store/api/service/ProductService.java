@@ -157,17 +157,7 @@ public class ProductService implements ProductServiceInterface{
 			skuSoldList.add(ps.getSku());
 		}
 		
-		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.FINISHED)) {
-			log.info("Client tried add a product in a sales order already finished.");
-			throw new SalesOrderProcessingException("This sales order was finished!");
-		}
-		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.CANCELED)) {
-			log.info("Client tried add a product in a sales order already canceled.");
-			throw new SalesOrderProcessingException("This sales order was canceled!");
-		}
-		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.PROCESSED)) {
-			salesOrder.setStatus(SalesOrderStatusEnum.OPEN);
-		}
+		ProductCanBeAdded(orderId, sku);
 			
 		if(skuSoldList.contains(sku)) {
 			for(ProductSalesOrder ps : salesOrder.getBag()) {
@@ -197,6 +187,24 @@ public class ProductService implements ProductServiceInterface{
 		salesOrderRepository.save(salesOrder);
 		
 		return salesOrder;
+	}
+	
+	public boolean ProductCanBeAdded(Long salesOrderSaleId, String sku) {
+		SalesOrder salesOrder = salesOrderRepository.findById(salesOrderSaleId).get();
+		
+		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.FINISHED)) {
+			log.info("Client tried add a product in a sales order already finished.");
+			throw new SalesOrderProcessingException("This sales order was finished!");
+		}
+		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.CANCELED)) {
+			log.info("Client tried add a product in a sales order already canceled.");
+			throw new SalesOrderProcessingException("This sales order was canceled!");
+		}
+		if(salesOrder.getStatus().equals(SalesOrderStatusEnum.PROCESSED)) {
+			salesOrder.setStatus(SalesOrderStatusEnum.OPEN);
+		}
+		salesOrderRepository.save(salesOrder);
+		return true;
 	}
 	
 	public void removeProduct(String sku, Long orderId, int amount) {
