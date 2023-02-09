@@ -85,7 +85,12 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			}
 		}
 		
-		productService.calculateTotalSalesOrder(salesOrder);
+		if(!salesOrder.getBag().isEmpty()) {
+			productService.calculateTotalSalesOrder(salesOrder);
+		} else {
+			salesOrder.setTotal(0);
+		}
+		
 		salesOrder.setStatus(SalesOrderStatusEnum.PROCESSED);
 		salesOrderRepository.save(salesOrder);
 		return salesOrder;
