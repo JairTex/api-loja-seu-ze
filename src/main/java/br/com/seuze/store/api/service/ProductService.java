@@ -2,6 +2,7 @@ package br.com.seuze.store.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import br.com.seuze.store.api.enumerations.ProductDepartmentEnum;
 import br.com.seuze.store.api.enumerations.ProductTypeEnum;
 import br.com.seuze.store.api.enumerations.SalesOrderStatusEnum;
 import br.com.seuze.store.api.exceptions.InvalidProductException;
+import br.com.seuze.store.api.exceptions.InvalidSizeException;
 import br.com.seuze.store.api.exceptions.ProductNotFountException;
 import br.com.seuze.store.api.exceptions.SalesOrderCancellationException;
 import br.com.seuze.store.api.exceptions.SalesOrderNotFoundException;
@@ -66,11 +68,17 @@ public class ProductService implements ProductServiceInterface{
 	}
 	
 	public boolean validateProduct(Product product) {
-		if(product.getAmount() >= 0 && product.getUnitprice() >= 0 && product.getSize() > 0){	
-			return true;
+		if(!(product.getAmount() > 0)){	
+			log.info("Invalid Product was not registered");
+			throw new InvalidProductException("The amount must be greater than zero!");
 		}
-		System.err.println("Invalid Product was not registered");
-		throw new InvalidProductException("Invalid Product, verify amount, unit price and size of this product!");
+		if(!(product.getUnitprice() > 0)){	
+			log.info("Invalid Product was not registered");
+			throw new InvalidProductException("The unitprice must be greater than zero!");
+		}
+		sizeValid(product.getSize());
+		
+		return true;
 	}
 	
 	public List<Product> listAllProducts() {
@@ -141,7 +149,7 @@ public class ProductService implements ProductServiceInterface{
 			return productRepository.findBySize(size);
 		}else {
 			log.info("Product searched by client for the size not found!");
-			throw new ProductNotFountException("There are no registered products of this color!");
+			throw new ProductNotFountException("There are no registered products of this size!");
 		}
 	}
 	
@@ -282,5 +290,22 @@ public class ProductService implements ProductServiceInterface{
 		salesOrderRepository.save(salesOrder);
 		
 		return salesOrder.getTotal(); 
+	}
+	
+	public boolean sizeValid(String size) {
+		if(size!=null && sizeFormatAccepted(size)) {
+			return true;
+		} else {
+			log.info("Invalid product size!");
+			throw new InvalidSizeException("Invalid size format. "
+					+ "Accepted formats: P, PP, M, G, GG, XG numbers from 00 to 99");
+		}
+	}
+	
+	public boolean sizeFormatAccepted(String size) {
+		String sizeRegex = "^[P]{1,2}$|^[G]{1,2}$|^[M]{1}$|^[X]{1}[G]{1}$|^[0-9]{2}$";
+		Pattern sizePattern = Pattern.compile(sizeRegex);
+		
+		return sizePattern.matcher(size).matches();
 	}
 }

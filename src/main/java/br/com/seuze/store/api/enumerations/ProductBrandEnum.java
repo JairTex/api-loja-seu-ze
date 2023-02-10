@@ -6,7 +6,7 @@ import java.util.List;
 public enum ProductBrandEnum {
 	MIXED("MIX"), CRIS_BARROS("CBA"), NK_STORE("NKS"),
 	NIKE("NIK"), ADIDAS("ADI"), LACOSTE("LAC"),
-	BURBERRY("BUR"), LEVIS("LEV"), OAKLEY("OAK");
+	BURBERRY("BUR"), LEVIS("LEV"), OAKLEY("OAK"), UNKNOWN("UNK");
 	
 	private final String value;
 	

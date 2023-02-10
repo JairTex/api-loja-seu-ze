@@ -18,6 +18,7 @@ import br.com.seuze.store.api.exceptions.CardNumberException;
 import br.com.seuze.store.api.exceptions.CardSecurityException;
 import br.com.seuze.store.api.exceptions.InvalidDocumentException;
 import br.com.seuze.store.api.exceptions.InvalidEmailException;
+import br.com.seuze.store.api.exceptions.InvalidSizeException;
 import br.com.seuze.store.api.exceptions.PhoneNumberException;
 import br.com.seuze.store.api.exceptions.PixPaymentException;
 import br.com.seuze.store.api.exceptions.SalesOrderCancellationException;
@@ -285,20 +286,20 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 	
 	public boolean cardDigitsAccepted(String number) {
 		number = number.replaceAll(" ", "");
-		int s1 = 0, s2 = 0;
+		int a = 0, b = 0;
 		String reverse = new StringBuffer(number).reverse().toString();
 		for (int i = 0 ;i < reverse.length();i++) {
 			int digit = Character.digit(reverse.charAt(i), 10);
-			if(i % 2 == 0) { s1 += digit; }
+			if(i % 2 == 0) { a += digit; }
 			else {
-				s2 += 2 * digit;
+				b += 2 * digit;
 				if (digit >= 5) { 
-					s2 -= 9; 
+					b -= 9; 
 				}
 			}
 		}
 		
-		if((s1 + s2) % 10 == 0) {
+		if((a + b) % 10 == 0) {
 			return true;
 		} else {
 			log.info("Invalid client card number digits!");

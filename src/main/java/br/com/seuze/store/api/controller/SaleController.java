@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.seuze.store.api.service.SaleService;
 
 @RestController
-@RequestMapping("seu-ze-store/")
-public class SalesController {
+@RequestMapping("sales")
+public class SaleController {
 	@Autowired
 	SaleService saleService;
 	
-	@GetMapping("sales/")
+	@GetMapping("/")
 	public ResponseEntity<?> getAllSalesOrder() {
 		return new ResponseEntity<>(saleService.listAllSales(),
-					HttpStatus.CREATED);
+					HttpStatus.OK);
 	}
 }

@@ -64,7 +64,7 @@ public class Product{
 	private ProductColorEnum color;
 	
 	@Column(name = "size") 
-	private int size;
+	private String size;
 	
 	@Column(name = "amount") 
 	private int amount;

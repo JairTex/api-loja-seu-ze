@@ -15,6 +15,7 @@ import br.com.seuze.store.api.exceptions.InvalidDocumentException;
 import br.com.seuze.store.api.exceptions.InvalidEmailException;
 import br.com.seuze.store.api.exceptions.InvalidProductException;
 import br.com.seuze.store.api.exceptions.InvalidSalesOrderException;
+import br.com.seuze.store.api.exceptions.PaymentMethodNotFoundException;
 import br.com.seuze.store.api.exceptions.PhoneNumberException;
 import br.com.seuze.store.api.exceptions.PixPaymentException;
 import br.com.seuze.store.api.exceptions.ProductNotFountException;
@@ -22,6 +23,7 @@ import br.com.seuze.store.api.exceptions.SaleNotFoundException;
 import br.com.seuze.store.api.exceptions.SalesOrderCancellationException;
 import br.com.seuze.store.api.exceptions.SalesOrderNotFoundException;
 import br.com.seuze.store.api.exceptions.SalesOrderProcessingException;
+import br.com.seuze.store.api.exceptions.InvalidSizeException;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -208,12 +210,51 @@ public class RestExceptionHandler {
 				.build(), HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(PaymentMethodNotFoundException.class)
+	public ResponseEntity<ExceptionPatternDetails> 
+	handlerPaymentMethodNotFoundException(PaymentMethodNotFoundException re){
+		return new ResponseEntity<>(
+				ExceptionPatternDetails.builder()
+				.title("Payment Method Not Found!")
+				.timestamp(LocalDateTime.now())
+				.status(HttpStatus.BAD_REQUEST.value())
+				.details(re.getMessage())
+				.developerMessage(re.getClass().getName())
+				.build(), HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(InvalidSizeException.class)
+	public ResponseEntity<ExceptionPatternDetails> 
+	handlerSizeException(InvalidSizeException re){
+		return new ResponseEntity<>(
+				ExceptionPatternDetails.builder()
+				.title("Invalid Size Format!")
+				.timestamp(LocalDateTime.now())
+				.status(HttpStatus.BAD_REQUEST.value())
+				.details(re.getMessage())
+				.developerMessage(re.getClass().getName())
+				.build(), HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ExceptionPatternDetails> 
 	handlerRuntimeException(RuntimeException re){
 		return new ResponseEntity<>(
 				ExceptionPatternDetails.builder()
 				.title("Runtime error!")
+				.timestamp(LocalDateTime.now())
+				.status(HttpStatus.BAD_REQUEST.value())
+				.details(re.getMessage())
+				.developerMessage(re.getClass().getName())
+				.build(), HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ExceptionPatternDetails> 
+	handlerException(Exception re){
+		return new ResponseEntity<>(
+				ExceptionPatternDetails.builder()
+				.title("Error!")
 				.timestamp(LocalDateTime.now())
 				.status(HttpStatus.BAD_REQUEST.value())
 				.details(re.getMessage())

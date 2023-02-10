@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import br.com.seuze.store.api.enumerations.PaymentMethodEnum;
 import br.com.seuze.store.api.enumerations.PixKeyTypeEnum;
+import br.com.seuze.store.api.exceptions.PaymentMethodNotFoundException;
+import br.com.seuze.store.api.exceptions.PixPaymentException;
 import br.com.seuze.store.api.service.SalesOrderService;
 import br.com.seuze.store.api.strategies.CashPaymentStrategy;
 import br.com.seuze.store.api.strategies.CreditCardPaymentStrategy;
@@ -20,32 +23,32 @@ import br.com.seuze.store.api.strategies.DebitCardPaymentStrategy;
 import br.com.seuze.store.api.strategies.PixPaymentStrategy;
 
 @RestController
-@RequestMapping("seu-ze-store/")
+@RequestMapping("sales-order")
 public class SalesOrderController {
 	@Autowired
 	SalesOrderService salesOrderService;
 	
-	@GetMapping("sales-order/")
-	//@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/")
+	//@ResponseStatus(HttpStatus.OK) If not use ResponseEntity
 	public ResponseEntity<?> getAllSalesOrder() {
 		return new ResponseEntity<>(salesOrderService.listAllSalesOrder(),
 					HttpStatus.OK);
 		
 	}
 	
-	@PostMapping("sales-order/create/")
+	@PostMapping("/create")
 	public ResponseEntity<?> create() {
 		return new ResponseEntity<>(salesOrderService.createSalesOrder(),
 					HttpStatus.CREATED);
 	}
 	
-	@GetMapping("sales-order/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<?> searchById(@PathVariable Long id) {
 		return new ResponseEntity<>(salesOrderService.searchById(id),
 					HttpStatus.OK);
 	}
 	
-	@PostMapping("sales-order/add-document-to-order/{id}")
+	@PostMapping("/add-document-to-order/{id}")
 	public ResponseEntity<?> addDocument(@PathVariable("id") Long id, @RequestBody ObjectNode objectNode) {
 		return new ResponseEntity<>(salesOrderService.addDocument(id, 
 					objectNode.get("document").asText()),
@@ -53,19 +56,19 @@ public class SalesOrderController {
 		
 	}
 	
-	@PostMapping("sales-order/process/{id}")
+	@PostMapping("/process/{id}")
 	public ResponseEntity<?> processSalesOrder(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(salesOrderService.processSalesOrder(id),
 				HttpStatus.OK);
 	}
 	
-	@PostMapping("sales-order/sell/{id}")
+	@PostMapping("/sell/{id}")
 	public ResponseEntity<?> sell(@PathVariable("id") Long id) {
  		return new ResponseEntity<>(salesOrderService.sell(id),
 					HttpStatus.OK);
 	}
 	
-	@PostMapping("sales-order/{paymentMethod}/{id}")
+	@PostMapping("/{paymentMethod}/{id}")
 	public ResponseEntity<?> processSalesOrderPayment(@PathVariable("id") Long id,
 			@PathVariable("paymentMethod") String paymentMethod, @RequestBody ObjectNode objectNode) {
 		switch(paymentMethod) {
@@ -78,7 +81,14 @@ public class SalesOrderController {
 			}
 			case("pix"):{
 				PixPaymentStrategy payment = new PixPaymentStrategy();
-				PixKeyTypeEnum pixKeyMethod = PixKeyTypeEnum.valueOf(objectNode.get("pixKeyType").asText().toUpperCase());
+				
+				String pixKeyType = objectNode.get("pixKeyType").asText().toUpperCase();
+				if(!PixKeyTypeEnum.getTypeList().contains(pixKeyType)) {
+					throw new PixPaymentException("This pix key type is unknown: " + pixKeyType 
+							+". Try one of these pix key types: " + PixKeyTypeEnum.getTypeList());
+				}
+				
+				PixKeyTypeEnum pixKeyMethod = PixKeyTypeEnum.valueOf(pixKeyType);
 				
 				String pixKey = objectNode.get("pixKey").asText();
 				payment.setOrderId(id);
@@ -108,14 +118,13 @@ public class SalesOrderController {
 							HttpStatus.OK);
 			}
 			default:{
-				return new ResponseEntity<>("Invalid payment method: " + paymentMethod 
-						+ "\nValids methods: cash, pix, debit-card e credit-card.",
-						HttpStatus.BAD_REQUEST);
+				throw new PaymentMethodNotFoundException("Invalid payment method: " + paymentMethod 
+						+ ". Try one of these methods: " + PaymentMethodEnum.getTypeList());
 			}
 		}
 	}
 	
-	@PostMapping("sales-order/cancel/{id}")
+	@PostMapping("/cancel/{id}")
 	public ResponseEntity<?> cancelSalesOrder(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(salesOrderService.cancelSalesOrder(id),
 					HttpStatus.OK);

@@ -1,11 +1,14 @@
 package br.com.seuze.store.api.service;
 
 import java.util.List;
+import java.util.regex.Pattern;
+
 import br.com.seuze.store.api.enumerations.ProductBrandEnum;
 import br.com.seuze.store.api.enumerations.ProductCategoryEnum;
 import br.com.seuze.store.api.enumerations.ProductColorEnum;
 import br.com.seuze.store.api.enumerations.ProductDepartmentEnum;
 import br.com.seuze.store.api.enumerations.ProductTypeEnum;
+import br.com.seuze.store.api.exceptions.InvalidSizeException;
 import br.com.seuze.store.api.model.Product;
 import br.com.seuze.store.api.model.SalesOrder;
 
@@ -45,5 +48,9 @@ public interface ProductServiceInterface {
 	public boolean validateSearch(Long orderSaleId, String sku);
 	
 	public Double calculateTotalSalesOrder(SalesOrder salesOrder);
+	
+	public boolean sizeValid(String size);
+	
+	public boolean sizeFormatAccepted(String size);
 	
 }
