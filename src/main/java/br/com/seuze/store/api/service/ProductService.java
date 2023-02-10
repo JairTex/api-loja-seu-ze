@@ -14,7 +14,8 @@ import br.com.seuze.store.api.enumerations.ProductTypeEnum;
 import br.com.seuze.store.api.enumerations.SalesOrderStatusEnum;
 import br.com.seuze.store.api.exceptions.InvalidProductException;
 import br.com.seuze.store.api.exceptions.ProductNotFountException;
-import br.com.seuze.store.api.exceptions.SalesOrderNotFound;
+import br.com.seuze.store.api.exceptions.SalesOrderCancellationException;
+import br.com.seuze.store.api.exceptions.SalesOrderNotFoundException;
 import br.com.seuze.store.api.exceptions.SalesOrderProcessingException;
 import br.com.seuze.store.api.model.Product;
 import br.com.seuze.store.api.model.ProductSalesOrder;
@@ -40,12 +41,9 @@ public class ProductService implements ProductServiceInterface{
 		}
 		
 		if(productRepository.findBySku(product.getSku()).isEmpty()){
-			if(validateProduct(product)) {
-				productRepository.save(product);
-			} else {
-				System.err.println("Invalid Product was not registered");
-				throw new InvalidProductException("Invalid Product, verify amount, unit price and size of this product!");
-			}
+			validateProduct(product);
+			productRepository.save(product);
+			
 		} else {
 			if(validateProduct(product)) {
 				Product productInStock = productRepository.findBySku(product.getSku()).get(0);
@@ -71,7 +69,8 @@ public class ProductService implements ProductServiceInterface{
 		if(product.getAmount() >= 0 && product.getUnitprice() >= 0 && product.getSize() > 0){	
 			return true;
 		}
-		return false;
+		System.err.println("Invalid Product was not registered");
+		throw new InvalidProductException("Invalid Product, verify amount, unit price and size of this product!");
 	}
 	
 	public List<Product> listAllProducts() {
@@ -83,9 +82,9 @@ public class ProductService implements ProductServiceInterface{
 		}
 	}
 	
-	public List<Product> searchBySku(String sku) {
+	public Product searchBySku(String sku) {
 		if(!productRepository.findBySku(sku).isEmpty()) {
-			return productRepository.findBySku(sku);
+			return productRepository.findBySku(sku).get(0);
 		}else {
 			log.info("Product searched by client for the sku not found!");
 			throw new ProductNotFountException("This product does not exist!");
@@ -243,7 +242,7 @@ public class ProductService implements ProductServiceInterface{
 	public boolean validateSearch(Long orderSaleId, String sku) {
 		if(salesOrderRepository.findById(orderSaleId).isEmpty()) {
 			log.info("Sales Order searched by client not found!");
-			throw new SalesOrderNotFound("This sales order does not exist!");
+			throw new SalesOrderNotFoundException("This sales order does not exist!");
 		}
 		if(productRepository.findBySku(sku).isEmpty()) {
 			log.info("Product searched by client not found!");
@@ -252,14 +251,24 @@ public class ProductService implements ProductServiceInterface{
 		return true;
 	}
 	
-	public boolean productCanBeRemoved(Long orderSaleId, String sku) {
+	public boolean productCanBeRemoved(Long salesOrderId, String sku) {
+		SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId).get();
+		if(salesOrder.getStatus() == SalesOrderStatusEnum.CANCELED) {
+			log.info("Client tried cancel a finished sales order.");
+			throw new SalesOrderCancellationException("This sales order has already been canceled!");
+		}
+		if(salesOrder.getStatus() == SalesOrderStatusEnum.FINISHED) {
+			log.info("Client tried cancel a canceled sales order.");
+			throw new SalesOrderCancellationException("It is not possible "
+					+ "remove products from a finished sales order!");
+		}
 		List<String> skuList = new ArrayList<>();
-		for(ProductSalesOrder pso : salesOrderRepository.findById(orderSaleId).get().getBag()) {
+		for(ProductSalesOrder pso : salesOrder.getBag()) {
 			skuList.add(pso.getSku());
 		}
 		if(!skuList.contains(sku)) {
 			log.info("Product searched by client not found in Sales Order!");
-			throw new SalesOrderNotFound("This Product does not exist in this Sales Order!");
+			throw new SalesOrderNotFoundException("This Product does not exist in this Sales Order!");
 		}
 		return true;
 	}

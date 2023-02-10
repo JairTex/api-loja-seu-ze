@@ -14,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,30 +34,36 @@ public class Product{
 	@Column(name = "sku", unique = true)
 	private String sku;
 	
-	@Column(name = "description", nullable = false) 
+	@Column(name = "description") 
+	@NotEmpty (message = "Description is mandatory!")
 	private String description;
 	
 	@Enumerated
-	@Column(name = "brand", nullable = false) 
+	@NotNull (message = "Brand is mandatory!")
+	@Column(name = "brand") 
 	private ProductBrandEnum brand;
 	
 	@Enumerated
-	@Column(name = "category", nullable = false) 
+	@NotNull (message = "Category is mandatory!")
+	@Column(name = "category") 
 	private ProductCategoryEnum category;
 	
 	@Enumerated
-	@Column(name = "department", nullable = false) 
+	@NotNull (message = "Department is mandatory!")
+	@Column(name = "department") 
 	private ProductDepartmentEnum department;
 	
 	@Enumerated
-	@Column(name = "type", nullable = false) 
+	@NotNull (message = "Type is mandatory!")
+	@Column(name = "type") 
 	private ProductTypeEnum type;
 	
 	@Enumerated
-	@Column(name = "color", nullable = false) 
+	@NotNull (message = "Color is mandatory!")
+	@Column(name = "color") 
 	private ProductColorEnum color;
 	
-	@Column(name = "size", nullable = false) 
+	@Column(name = "size") 
 	private int size;
 	
 	@Column(name = "amount") 
@@ -63,22 +71,5 @@ public class Product{
 	
 	@Column(name = "unitprice") 
 	private double unitprice;
-	
-	public Product(String description, ProductBrandEnum brand, ProductCategoryEnum category,
-			ProductDepartmentEnum department, ProductTypeEnum type, ProductColorEnum color, 
-			int size, int amount, double unitprice) {
-		
-		this.sku = brand.getValue() + "-" + category.getValue() + department.getValue()
-		+ "-" + type.getValue() + "-" + color.getValue() + "-" + size;
-		this.description = description;
-		this.brand = brand;
-		this.category = category;
-		this.department = department;
-		this.type = type;
-		this.color = color;
-		this.size = size;
-		this.amount = amount;
-		this.unitprice = unitprice;
-	}
 	
 }

@@ -28,69 +28,41 @@ public class SalesOrderController {
 	@GetMapping("sales-order/")
 	//@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<?> getAllSalesOrder() {
-		try {
-			return new ResponseEntity<>(salesOrderService.listAllSalesOrder(),
+		return new ResponseEntity<>(salesOrderService.listAllSalesOrder(),
 					HttpStatus.OK);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
+		
 	}
 	
 	@PostMapping("sales-order/create/")
 	public ResponseEntity<?> create() {
-		try {
-			return new ResponseEntity<>(salesOrderService.createSalesOrder(),
+		return new ResponseEntity<>(salesOrderService.createSalesOrder(),
 					HttpStatus.CREATED);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
 	}
 	
 	@GetMapping("sales-order/{id}")
 	public ResponseEntity<?> searchById(@PathVariable Long id) {
-		try {
-			return new ResponseEntity<>(salesOrderService.searchById(id),
+		return new ResponseEntity<>(salesOrderService.searchById(id),
 					HttpStatus.OK);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
 	}
 	
 	@PostMapping("sales-order/add-document-to-order/{id}")
 	public ResponseEntity<?> addDocument(@PathVariable("id") Long id, @RequestBody ObjectNode objectNode) {
-		try {
-			return new ResponseEntity<>(salesOrderService.addDocument(id, 
+		return new ResponseEntity<>(salesOrderService.addDocument(id, 
 					objectNode.get("document").asText()),
 					HttpStatus.OK);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
+		
 	}
 	
 	@PostMapping("sales-order/process/{id}")
 	public ResponseEntity<?> processSalesOrder(@PathVariable("id") Long id) {
-		try {
-			return new ResponseEntity<>(salesOrderService.processOrderSale(id),
-					HttpStatus.OK);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
+		return new ResponseEntity<>(salesOrderService.processSalesOrder(id),
+				HttpStatus.OK);
 	}
 	
 	@PostMapping("sales-order/sell/{id}")
 	public ResponseEntity<?> sell(@PathVariable("id") Long id) {
-		try {
- 			return new ResponseEntity<>(salesOrderService.sell(id),
+ 		return new ResponseEntity<>(salesOrderService.sell(id),
 					HttpStatus.OK);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
 	}
 	
 	@PostMapping("sales-order/{paymentMethod}/{id}")
@@ -100,13 +72,9 @@ public class SalesOrderController {
 			case("cash"):{
 				CashPaymentStrategy payment = new CashPaymentStrategy();
 				payment.setOrderId(id);
-				try {
-					return new ResponseEntity<>(salesOrderService.addPaymentMethodCash(id, payment),
+				
+				return new ResponseEntity<>(salesOrderService.addPaymentMethodCash(id, payment),
 							HttpStatus.OK);
-				}catch (RuntimeException e) {
-					return new ResponseEntity<>(e.getMessage(),
-							HttpStatus.BAD_REQUEST);
-				}
 			}
 			case("pix"):{
 				PixPaymentStrategy payment = new PixPaymentStrategy();
@@ -116,13 +84,8 @@ public class SalesOrderController {
 				payment.setOrderId(id);
 				payment.setPixKeyType(pixKeyMethod);
 				payment.setKey(pixKey);
-				try {
-					return new ResponseEntity<>(salesOrderService.addPaymentMethodPix(id, payment),
+				return new ResponseEntity<>(salesOrderService.addPaymentMethodPix(id, payment),
 							HttpStatus.OK);
-				}catch (RuntimeException e) {
-					return new ResponseEntity<>(e.getMessage(),
-							HttpStatus.BAD_REQUEST);
-				}
 			}
 			case("debit-card"):{
 				DebitCardPaymentStrategy payment = new DebitCardPaymentStrategy();
@@ -131,13 +94,8 @@ public class SalesOrderController {
 				payment.setCardNumber(objectNode.get("cardNumber").asText());
 				payment.setExpirationDate(objectNode.get("expirationDate").asText());
 				
-				try {
-					return new ResponseEntity<>(salesOrderService.addPaymentMethodCard(id, payment),
+				return new ResponseEntity<>(salesOrderService.addPaymentMethodCard(id, payment),
 							HttpStatus.OK);
-				}catch (RuntimeException e) {
-					return new ResponseEntity<>(e.getMessage(),
-							HttpStatus.BAD_REQUEST);
-				}
 			}
 			case("credit-card"):{
 				CreditCardPaymentStrategy payment = new CreditCardPaymentStrategy();
@@ -146,13 +104,8 @@ public class SalesOrderController {
 				payment.setCardNumber(objectNode.get("cardNumber").asText());
 				payment.setExpirationDate(objectNode.get("expirationDate").asText());
 				
-				try {
-					return new ResponseEntity<>(salesOrderService.addPaymentMethodCard(id, payment),
+				return new ResponseEntity<>(salesOrderService.addPaymentMethodCard(id, payment),
 							HttpStatus.OK);
-				}catch (RuntimeException e) {
-					return new ResponseEntity<>(e.getMessage(),
-							HttpStatus.BAD_REQUEST);
-				}
 			}
 			default:{
 				return new ResponseEntity<>("Invalid payment method: " + paymentMethod 
@@ -164,12 +117,7 @@ public class SalesOrderController {
 	
 	@PostMapping("sales-order/cancel/{id}")
 	public ResponseEntity<?> cancelSalesOrder(@PathVariable("id") Long id) {
-		try {
-			return new ResponseEntity<>(salesOrderService.cancelSalesOrder(id),
+		return new ResponseEntity<>(salesOrderService.cancelSalesOrder(id),
 					HttpStatus.OK);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
 	}
 }

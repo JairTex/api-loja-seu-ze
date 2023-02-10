@@ -13,7 +13,7 @@ public interface SaleOrderServiceInterface {
 	
 	public List<SalesOrder> listAllSalesOrder();
 	
-	public SalesOrder processOrderSale(Long salesOrderId);
+	public SalesOrder processSalesOrder(Long salesOrderId);
 	
 	public SalesOrder addPaymentMethodCash(Long salesOrderId, CashPaymentStrategy payment);
 	

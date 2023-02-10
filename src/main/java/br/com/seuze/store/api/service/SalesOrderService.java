@@ -16,11 +16,12 @@ import br.com.seuze.store.api.enumerations.SalesOrderStatusEnum;
 import br.com.seuze.store.api.exceptions.CardDateException;
 import br.com.seuze.store.api.exceptions.CardNumberException;
 import br.com.seuze.store.api.exceptions.CardSecurityException;
-import br.com.seuze.store.api.exceptions.DocumentException;
-import br.com.seuze.store.api.exceptions.EmailException;
+import br.com.seuze.store.api.exceptions.InvalidDocumentException;
+import br.com.seuze.store.api.exceptions.InvalidEmailException;
 import br.com.seuze.store.api.exceptions.PhoneNumberException;
 import br.com.seuze.store.api.exceptions.PixPaymentException;
-import br.com.seuze.store.api.exceptions.SalesOrderNotFound;
+import br.com.seuze.store.api.exceptions.SalesOrderCancellationException;
+import br.com.seuze.store.api.exceptions.SalesOrderNotFoundException;
 import br.com.seuze.store.api.exceptions.SalesOrderProcessingException;
 import br.com.seuze.store.api.model.Product;
 import br.com.seuze.store.api.model.ProductSalesOrder;
@@ -59,7 +60,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			return salesOrderRepository.findById(id).get();
 		}else {
 			log.info("Sales Order searched by client not found!");
-			throw new SalesOrderNotFound("This Sales Order does not exist!");
+			throw new SalesOrderNotFoundException("This Sales Order does not exist!");
 		}
 	}
 	
@@ -68,11 +69,11 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			return salesOrderRepository.findAll();
 		}else {
 			log.info("Sales Order searched by client not found!");
-			throw new SalesOrderNotFound("There are no registered Sales Order!");
+			throw new SalesOrderNotFoundException("There are no registered Sales Order!");
 		}
 	}
 	
-	public SalesOrder processOrderSale(Long salesOrderId) {
+	public SalesOrder processSalesOrder(Long salesOrderId) {
 		validateSalesOrderSearch(salesOrderId);
 		
 		SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId).get();
@@ -81,7 +82,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 		
 		List<Product> productInStock = new ArrayList<>();
 		for(ProductSalesOrder pso : salesOrder.getBag()) {
-			productInStock.add(productService.searchBySku(pso.getSku()).get(0));
+			productInStock.add(productService.searchBySku(pso.getSku()));
 		}
 		
 		for(int i = 0; i < salesOrder.getBag().size();i++) {
@@ -141,7 +142,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 		SalesOrder salesOrder = salesOrderRepository.findById(salesOrderId).get();
 		salesOrderCanBeProcessed(salesOrder);
 		
-		processOrderSale(salesOrderId);
+		processSalesOrder(salesOrderId);
 		salesOrder.setPayment(payment);
 		salesOrderRepository.save(salesOrder);
 		
@@ -176,7 +177,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 		salesOrder.setSale_id(sale.getId());
 		
 		for(ProductSalesOrder pso : salesOrder.getBag()) {
-			Product productinStock = productService.searchBySku(pso.getSku()).get(0);
+			Product productinStock = productService.searchBySku(pso.getSku());
 			productinStock.setAmount(productinStock.getAmount() - pso.getAmount());
 			pso.setSaleId(salesOrder.getSale_id());
 			pso.setSold(true);	
@@ -222,7 +223,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			return true;
 		} else {
 			log.info("Invalid client document!");
-			throw new DocumentException("Invalid document format. Accepted format: XXX.XXX.XXX-XX");
+			throw new InvalidDocumentException("Invalid document format. Accepted format: XXX.XXX.XXX-XX");
 		}
 	}
 	
@@ -270,15 +271,15 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			cpdValid += numero;
 		}
 		
-		List<String> invalidDocuments = Arrays.asList("000.000.000-00", "111.111.111-11",
-				"222.222.222-22", "333.333.333-33", "444.444.444-44", "555.555.555-55",
-				"666.666.666-66", "777.777.777-77", "888.888.888-88", "999.999.999-99");
+		List<String> invalidDocuments = Arrays.asList("00000000000", "11111111111",
+				"22222222222", "33333333333", "44444444444", "55555555555",
+				"66666666666", "77777777777", "88888888888", "99999999999");
 		
 		if(document.equalsIgnoreCase(cpdValid) && !invalidDocuments.contains(document)) {
 			return true;
 		}else {
 			log.info("Invalid client document digits!");
-			throw new DocumentException("Invalid document digits.");
+			throw new InvalidDocumentException("Invalid document digits.");
 		}
 	}
 	
@@ -291,7 +292,9 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			if(i % 2 == 0) { s1 += digit; }
 			else {
 				s2 += 2 * digit;
-				if (digit >= 5) { s2 -= 9; }
+				if (digit >= 5) { 
+					s2 -= 9; 
+				}
 			}
 		}
 		
@@ -299,7 +302,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			return true;
 		} else {
 			log.info("Invalid client card number digits!");
-			throw new RuntimeException("Invalid card number digits format.");
+			throw new CardNumberException("Invalid card number digits format.");
 		}
 	}
 	
@@ -361,7 +364,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 			return true;
 		} else {
 			log.info("Invalid client email!");
-			throw new EmailException("Invalid email format.");
+			throw new InvalidEmailException("Invalid email format.");
 		}
 	}
 	
@@ -391,7 +394,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 	public boolean validateSalesOrderSearch(Long orderSaleId) {
 		if(salesOrderRepository.findById(orderSaleId).isEmpty()) {
 			log.info("Sales Order searched by client not found!");
-			throw new SalesOrderNotFound("This sales order does not exist!");
+			throw new SalesOrderNotFoundException("This sales order does not exist!");
 		}
 		return true;
 	}
@@ -436,7 +439,7 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 		
 		boolean isValid = true;
 		for(ProductSalesOrder pso : salesOrder.getBag()) {
-			Product productinStock = productService.searchBySku(pso.getSku()).get(0);
+			Product productinStock = productService.searchBySku(pso.getSku());
 			if(pso.getAmount() > productinStock.getAmount()) {
 				isValid = false;
 			}
@@ -454,11 +457,11 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 	public boolean salesOrderCanBeCanceled(SalesOrder salesOrder) {
 		if(salesOrder.getStatus() == SalesOrderStatusEnum.FINISHED) {
 			log.info("Client tried cancel a finished sales order.");
-			throw new RuntimeException("This sales order has already been canceled!");
+			throw new SalesOrderCancellationException("It is not possible to cancel an already finished sales order!");
 		}
 		if(salesOrder.getStatus() == SalesOrderStatusEnum.CANCELED) {
 			log.info("Client tried cancel a canceled sales order.");
-			throw new RuntimeException("It is not possible to cancel an already finished sales order!");
+			throw new SalesOrderCancellationException("This sales order has already been canceled!");
 		}
 		return true;
 	}

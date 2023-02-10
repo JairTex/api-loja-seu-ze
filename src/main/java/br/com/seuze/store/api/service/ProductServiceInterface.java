@@ -18,7 +18,7 @@ public interface ProductServiceInterface {
 	
 	public List<Product> listAllProducts();
 	
-	public List<Product> searchBySku(String sku);
+	public Product searchBySku(String sku);
 	
 	public List<Product> searchByBrand(ProductBrandEnum brand);
 	

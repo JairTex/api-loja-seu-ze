@@ -17,13 +17,7 @@ public class SalesController {
 	
 	@GetMapping("sales/")
 	public ResponseEntity<?> getAllSalesOrder() {
-		try {
-			return new ResponseEntity<>(saleService.listAllSales(),
+		return new ResponseEntity<>(saleService.listAllSales(),
 					HttpStatus.CREATED);
-		}catch (RuntimeException e) {
-			return new ResponseEntity<>(e.getMessage(),
-					HttpStatus.BAD_REQUEST);
-		}
-		//return saleService.listAllSalesOrder();
 	}
 }
