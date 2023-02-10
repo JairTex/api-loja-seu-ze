@@ -1,36 +1,32 @@
 package br.com.seuze.store.api.enumerations;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum ProductBrandEnum {
-	MIXED("MIX", "Mixed"), CRIS_BARROS("CBA", "Cris Barros"), NK_STORE("NKS", "NK Store"),
-	NIKE("NIK", "Nike"), ADIDAS("ADI", "Adidas"), LACOSTE("LAC", "Lacoste"),
-	BURBERRY("BUR", "Burberry"), LEVIS("LEV", "Levi's"), OAKLEY("OAK", "Oakley");
+	MIXED("MIX"), CRIS_BARROS("CBA"), NK_STORE("NKS"),
+	NIKE("NIK"), ADIDAS("ADI"), LACOSTE("LAC"),
+	BURBERRY("BUR"), LEVIS("LEV"), OAKLEY("OAK");
 	
 	private final String value;
-    private final String description;
 	
-    private static final Map<String, ProductBrandEnum> listOfBrands = new LinkedHashMap<>();
-	 
-    static {
-    	for(ProductBrandEnum productBrand : ProductBrandEnum.values()) { 
-    		listOfBrands.put(productBrand.getValue(), productBrand);
-    		}
-    }
-    
-    private ProductBrandEnum(String value, String description) {
+    private ProductBrandEnum(String value) {
 		this.value = value;
-		this.description = description;
 	}
 
 	public String getValue() {
 		return value;
 	}
-	public String getDescription() {
-		return description;
-	}
-	public static Map<String, ProductBrandEnum> getListOfBrands() {
+	
+	private static final List<String> listOfBrands = new ArrayList<>();
+	 
+    static {
+    	for(ProductBrandEnum productBrand : ProductBrandEnum.values()) { 
+    		listOfBrands.add(productBrand.toString());
+    		}
+    }
+    
+    public static List<String> getBrandList() {
 		return listOfBrands;
 	}
 }

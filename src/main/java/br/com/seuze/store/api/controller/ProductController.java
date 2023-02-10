@@ -18,6 +18,7 @@ import br.com.seuze.store.api.enumerations.ProductCategoryEnum;
 import br.com.seuze.store.api.enumerations.ProductColorEnum;
 import br.com.seuze.store.api.enumerations.ProductDepartmentEnum;
 import br.com.seuze.store.api.enumerations.ProductTypeEnum;
+import br.com.seuze.store.api.exceptions.ProductNotFountException;
 import br.com.seuze.store.api.model.Product;
 import br.com.seuze.store.api.service.ProductService;
 import br.com.seuze.store.api.service.SalesOrderService;
@@ -52,8 +53,14 @@ public class ProductController {
 	
 	@GetMapping("product/brand/{brand}")
 	public ResponseEntity<?> getProductByBrand(@PathVariable("brand") String brand){
+		brand = brand.toUpperCase();
+		if(!ProductBrandEnum.getBrandList().contains(brand)) {
+			throw new ProductNotFountException("This brand is unknown: " + brand 
+					+". Try one of these brands: " + ProductBrandEnum.getBrandList());
+		}
+		
 		return new ResponseEntity<>(
-						productService.searchByBrand(ProductBrandEnum.valueOf(brand.toUpperCase())),
+						productService.searchByBrand(ProductBrandEnum.valueOf(brand)),
 						HttpStatus.OK);
 	}
 	

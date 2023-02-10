@@ -1,34 +1,30 @@
 package br.com.seuze.store.api.enumerations;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum ProductCategoryEnum {
-	WOMEN("W", "Women's"), MEN("M", "Men's"), CHILDREN("C", "Children’s");
+	WOMEN("W"), MEN("M"), CHILDREN("C");
 	
 	private final String value;
-    private final String description;
-	
-    private static final Map<String, ProductCategoryEnum> listOfCategorys = new LinkedHashMap<>();
-	 
-    static {
-    	for(ProductCategoryEnum productCategory : ProductCategoryEnum.values()) { 
-    		listOfCategorys.put(productCategory.getValue(), productCategory);
-    		}
-    }
-    
-    private ProductCategoryEnum(String value, String description) {
+  
+    private ProductCategoryEnum(String value) {
 		this.value = value;
-		this.description = description;
 	}
 
 	public String getValue() {
 		return value;
 	}
-	public String getDescription() {
-		return description;
-	}
-	public static Map<String, ProductCategoryEnum> getListofcategorys() {
+	
+	private static final List<String> listOfCategorys = new ArrayList<>();
+	 
+    static {
+    	for(ProductCategoryEnum productCategory : ProductCategoryEnum.values()) { 
+    		listOfCategorys.add(productCategory.toString());
+    		}
+    }
+    
+    public static List<String> getCategoryList() {
 		return listOfCategorys;
 	}
 }

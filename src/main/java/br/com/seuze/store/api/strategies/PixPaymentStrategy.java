@@ -1,6 +1,6 @@
 package br.com.seuze.store.api.strategies;
 
-import br.com.seuze.store.api.enumerations.PaymentMethod;
+import br.com.seuze.store.api.enumerations.PaymentMethodEnum;
 import br.com.seuze.store.api.enumerations.PixKeyTypeEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,8 +22,8 @@ public class PixPaymentStrategy extends PaymentStrategy {
 	private String key;
 
 	@Override
-	public PaymentMethod getPaymentMethod() {
-		return PaymentMethod.PIX;
+	public PaymentMethodEnum getPaymentMethod() {
+		return PaymentMethodEnum.PIX;
 	}
 	
 }

@@ -1,35 +1,35 @@
 package br.com.seuze.store.api.enumerations;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public enum ProductTypeEnum {
-	SHIRT("SHI", "Shirt"), SHORTS("SCT", "Shorts"), PANTS("PAN", "Pants"),
-	SHOES("SHO", "Shoes"), HAT("HAT", "Hat"), SWIMMING_CAP("SCA", "Swimming Cap");
+	SHIRT("SHI"), SHORTS("SCT"), PANTS("PAN"),
+	SHOES("SHO"), HAT("HAT"), SWIMMING_CAP("SCA");
 	
     private final String value;
-    private final String description;
 	
-    private static final Map<String, ProductTypeEnum> listOfTypes = new LinkedHashMap<>();
-	 
-    static {
-    	for(ProductTypeEnum productType : ProductTypeEnum.values()) { 
-    		listOfTypes.put(productType.getValue(), productType);
-    		}
-    }
+   
     
-    private ProductTypeEnum(String value, String description) {
+    private ProductTypeEnum(String value) {
 		this.value = value;
-		this.description = description;
 	}
 
 	public String getValue() {
 		return value;
 	}
-	public String getDescription() {
-		return description;
-	}
-	public static Map<String, ProductTypeEnum> getListoftypes() {
+	
+	private static final List<String> listOfTypes = new ArrayList<>();
+	 
+    static {
+    	for(ProductTypeEnum productType : ProductTypeEnum.values()) { 
+    		listOfTypes.add(productType.toString());
+    		}
+    }
+    
+    public static List<String> getTypeList() {
 		return listOfTypes;
 	}
 }

@@ -1,6 +1,6 @@
 package br.com.seuze.store.api.strategies;
 
-import br.com.seuze.store.api.enumerations.PaymentMethod;
+import br.com.seuze.store.api.enumerations.PaymentMethodEnum;
 import jakarta.persistence.Entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,8 +10,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class CashPaymentStrategy extends PaymentStrategy { 
 	@Override
-	public PaymentMethod getPaymentMethod() {
-		return PaymentMethod.CASH;
+	public PaymentMethodEnum getPaymentMethod() {
+		return PaymentMethodEnum.CASH;
 	}
 }
  

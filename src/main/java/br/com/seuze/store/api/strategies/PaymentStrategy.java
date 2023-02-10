@@ -2,7 +2,7 @@ package br.com.seuze.store.api.strategies;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.com.seuze.store.api.enumerations.PaymentMethod;
+import br.com.seuze.store.api.enumerations.PaymentMethodEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -39,5 +39,5 @@ public abstract class PaymentStrategy {
 	@Column(name = "total") 
 	private Double total;
 	
-	public abstract PaymentMethod getPaymentMethod();
+	public abstract PaymentMethodEnum getPaymentMethod();
 }
