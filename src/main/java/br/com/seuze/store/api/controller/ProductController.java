@@ -21,7 +21,7 @@ import br.com.seuze.store.api.exceptions.ProductNotFountException;
 import br.com.seuze.store.api.model.Product;
 import br.com.seuze.store.api.service.ProductService;
 import br.com.seuze.store.api.service.SalesOrderService;
-import jakarta.validation.Valid;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("product")
@@ -30,26 +30,30 @@ public class ProductController {
 	ProductService productService;
 	@Autowired
 	SalesOrderService salesOrderService; 
-
-	@PostMapping("/")
-	public ResponseEntity<?> registerProduct(@RequestBody @Valid Product product) {
+	
+	@ApiOperation(value = "API to enter a product in stock.")
+	@PostMapping("")
+	public ResponseEntity<?> registerProduct(@RequestBody Product product) {
 			return new ResponseEntity<>(productService.registerProduct(product),
 					HttpStatus.CREATED);
 		
 	}
 	
-	@GetMapping("/")
+	@ApiOperation("API to list stock products.")
+	@GetMapping("")
 	public ResponseEntity<?> getAllProducts(){
 			return new ResponseEntity<>(productService.listAllProducts(),
 						HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to find a product by sku.")
 	@GetMapping("/{sku}")
 	public ResponseEntity<?> getProductBySku(@PathVariable String sku){
 			return new ResponseEntity<>(productService.searchBySku(sku),
 						HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to find a list products from a brand.")
 	@GetMapping("/brand/{brand}")
 	public ResponseEntity<?> getProductByBrand(@PathVariable("brand") String brand){
 		brand = brand.toUpperCase();
@@ -63,6 +67,7 @@ public class ProductController {
 						HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to find a list products from a category.")
 	@GetMapping("/category/{category}")
 	public ResponseEntity<?> getProductByCategory(@PathVariable("category") String category){
 		category = category.toUpperCase();
@@ -75,6 +80,7 @@ public class ProductController {
 						HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to find a list products from a department.")
 	@GetMapping("/department/{department}")
 	public ResponseEntity<?> getProductByDepartment(@PathVariable("department") String department){
 		department = department.toUpperCase();
@@ -87,6 +93,7 @@ public class ProductController {
 						HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to find a list products from a type.")
 	@GetMapping("/type/{type}")
 	public ResponseEntity<?> getProductByType(@PathVariable("type") String type){
 		type = type.toUpperCase();
@@ -100,6 +107,7 @@ public class ProductController {
 		
 	}
 	
+	@ApiOperation("API to find a list products from a color.")
 	@GetMapping("/color/{color}")
 	public ResponseEntity<?> getProductByColor(@PathVariable("color") String color){
 		color = color.toUpperCase();
@@ -112,6 +120,7 @@ public class ProductController {
 						HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to find a list products from a size.")
 	@GetMapping("/size/{size}")
 	public ResponseEntity<?> getProductBySize(@PathVariable("size") int size){
 		return new ResponseEntity<>(
@@ -119,6 +128,7 @@ public class ProductController {
 						HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to add a product to a sales order.")
 	@PostMapping("/add-to-sales-order/{orderId}")
 	public ResponseEntity<?> addProductToSalesOrder(@PathVariable Long orderId, 
 			@RequestBody ObjectNode objectNode) {
@@ -129,6 +139,7 @@ public class ProductController {
 		
 	}
 	
+	@ApiOperation("API to remove a product from a sales order.")
 	@PostMapping("/remove-from-sales-order/{orderId}")
 	public ResponseEntity<?> removeProductFromSalesOrder(@PathVariable Long orderId, @RequestBody ObjectNode objectNode) {
 		String sku = objectNode.get("sku").asText();

@@ -6,7 +6,6 @@
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/exceptions/CardDateException.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/strategies/PaymentStrategy.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/repository/SalesOrderRepository.java
-/home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/controller/SalesController.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/service/ProductServiceInterface.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/service/SaleOrderServiceInterface.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/exceptions/SalesOrderProcessingException.java
@@ -19,6 +18,7 @@
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/exceptions/InvalidEmailException.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/model/SalesOrder.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/enumerations/ProductTypeEnum.java
+/home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/controller/SaleController.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/exceptions/SalesOrderCancellationException.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/exceptions/InvalidProductException.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/enumerations/PaymentMethodEnum.java
@@ -28,6 +28,7 @@
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/service/SaleService.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/enumerations/ProductBrandEnum.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/exceptions/ExceptionPatternDetails.java
+/home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/config/SwaggerConfig.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/model/Sale.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/ApiLojaSeuZeApplication.java
 /home/jair/workspace/api-loja-seu-ze/src/main/java/br/com/seuze/store/api/exceptions/InvalidSizeException.java

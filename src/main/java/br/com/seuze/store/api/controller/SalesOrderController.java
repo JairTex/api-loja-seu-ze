@@ -21,6 +21,7 @@ import br.com.seuze.store.api.strategies.CashPaymentStrategy;
 import br.com.seuze.store.api.strategies.CreditCardPaymentStrategy;
 import br.com.seuze.store.api.strategies.DebitCardPaymentStrategy;
 import br.com.seuze.store.api.strategies.PixPaymentStrategy;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("sales-order")
@@ -28,7 +29,8 @@ public class SalesOrderController {
 	@Autowired
 	SalesOrderService salesOrderService;
 	
-	@GetMapping("/")
+	@ApiOperation("API to list all sales order.")
+	@GetMapping("")
 	//@ResponseStatus(HttpStatus.OK) If not use ResponseEntity
 	public ResponseEntity<?> getAllSalesOrder() {
 		return new ResponseEntity<>(salesOrderService.listAllSalesOrder(),
@@ -36,19 +38,22 @@ public class SalesOrderController {
 		
 	}
 	
+	@ApiOperation("API open a new sales order.")
 	@PostMapping("/create")
 	public ResponseEntity<?> create() {
 		return new ResponseEntity<>(salesOrderService.createSalesOrder(),
 					HttpStatus.CREATED);
 	}
 	
+	@ApiOperation("API to find a sales order by id.")
 	@GetMapping("/{id}")
 	public ResponseEntity<?> searchById(@PathVariable Long id) {
 		return new ResponseEntity<>(salesOrderService.searchById(id),
 					HttpStatus.OK);
 	}
 	
-	@PostMapping("/add-document-to-order/{id}")
+	@ApiOperation("API to add a document to a sales order.")
+	@PostMapping("/add-document/{id}")
 	public ResponseEntity<?> addDocument(@PathVariable("id") Long id, @RequestBody ObjectNode objectNode) {
 		return new ResponseEntity<>(salesOrderService.addDocument(id, 
 					objectNode.get("document").asText()),
@@ -56,18 +61,21 @@ public class SalesOrderController {
 		
 	}
 	
+	@ApiOperation("API to process a sales order before sale.")
 	@PostMapping("/process/{id}")
 	public ResponseEntity<?> processSalesOrder(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(salesOrderService.processSalesOrder(id),
 				HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to sell the products from a sales order.")
 	@PostMapping("/sell/{id}")
 	public ResponseEntity<?> sell(@PathVariable("id") Long id) {
  		return new ResponseEntity<>(salesOrderService.sell(id),
 					HttpStatus.OK);
 	}
 	
+	@ApiOperation("API to register a payment method on a sales order before sale.")
 	@PostMapping("/{paymentMethod}/{id}")
 	public ResponseEntity<?> processSalesOrderPayment(@PathVariable("id") Long id,
 			@PathVariable("paymentMethod") String paymentMethod, @RequestBody ObjectNode objectNode) {
@@ -124,6 +132,7 @@ public class SalesOrderController {
 		}
 	}
 	
+	@ApiOperation("API to cancel an open or processed sales order.")
 	@PostMapping("/cancel/{id}")
 	public ResponseEntity<?> cancelSalesOrder(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(salesOrderService.cancelSalesOrder(id),

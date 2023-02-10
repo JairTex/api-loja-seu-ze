@@ -2,6 +2,7 @@ br/com/seuze/store/api/service/SaleService.class
 br/com/seuze/store/api/handler/RestExceptionHandler.class
 br/com/seuze/store/api/exceptions/PaymentMethodNotFoundException.class
 br/com/seuze/store/api/exceptions/PixPaymentException.class
+br/com/seuze/store/api/controller/SaleController.class
 br/com/seuze/store/api/strategies/CashPaymentStrategy.class
 br/com/seuze/store/api/strategies/PixPaymentStrategy.class
 br/com/seuze/store/api/enumerations/ProductDepartmentEnum.class
@@ -17,6 +18,7 @@ br/com/seuze/store/api/model/ProductSalesOrder.class
 br/com/seuze/store/api/model/SalesOrder.class
 br/com/seuze/store/api/enumerations/ProductColorEnum.class
 br/com/seuze/store/api/repository/SalesOrderRepository.class
+br/com/seuze/store/api/config/SwaggerConfig.class
 br/com/seuze/store/api/strategies/DebitCardPaymentStrategy.class
 br/com/seuze/store/api/model/ProductSalesOrder$ProductSalesOrderBuilder.class
 br/com/seuze/store/api/enumerations/ProductBrandEnum.class
@@ -44,7 +46,6 @@ br/com/seuze/store/api/service/ProductServiceInterface.class
 br/com/seuze/store/api/model/SalesOrder$SalesOrderBuilder.class
 br/com/seuze/store/api/exceptions/InvalidProductException.class
 br/com/seuze/store/api/exceptions/CardNumberException.class
-br/com/seuze/store/api/controller/SalesController.class
 br/com/seuze/store/api/controller/SalesOrderController.class
 br/com/seuze/store/api/model/Sale$SaleBuilder.class
 br/com/seuze/store/api/exceptions/SalesOrderProcessingException.class

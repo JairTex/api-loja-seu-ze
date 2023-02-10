@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.seuze.store.api.service.SaleService;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("sales")
@@ -15,7 +16,8 @@ public class SaleController {
 	@Autowired
 	SaleService saleService;
 	
-	@GetMapping("/")
+	@ApiOperation("API to list sales made.")
+	@GetMapping("")
 	public ResponseEntity<?> getAllSalesOrder() {
 		return new ResponseEntity<>(saleService.listAllSales(),
 					HttpStatus.OK);
