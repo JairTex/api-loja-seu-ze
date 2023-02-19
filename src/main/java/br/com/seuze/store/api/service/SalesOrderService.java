@@ -81,22 +81,17 @@ public class SalesOrderService implements SaleOrderServiceInterface {
 		
 		salesOrderCanBeProcessed(salesOrder);
 		
-		List<Product> productInStock = new ArrayList<>();
-		for(ProductSalesOrder pso : salesOrder.getBag()) {
-			productInStock.add(productService.searchBySku(pso.getSku()));
-		}
-		
-		for(int i = 0; i < salesOrder.getBag().size();i++) {
-			if(salesOrder.getBag().get(i).getAmount() > productInStock.get(i).getAmount()) {
-				int excess = salesOrder.getBag().get(i).getAmount() - productInStock.get(i).getAmount();
+		int bagSize = salesOrder.getBag().size()-1;
+		for(int i = bagSize; i >= 0; i--) {
+			ProductSalesOrder pso = salesOrder.getBag().get(i);
+			Product productInStock = productService.searchBySku(pso.getSku());
+			
+			if(pso.getAmount() > productInStock.getAmount()) {
+				int excess = pso.getAmount()  - productInStock.getAmount();
 				productService.removeProduct( salesOrder.getBag().get(i).getSku(), 
 						salesOrder.getId(), excess);
-				i--;
 			}
-			if(salesOrder.getBag().size()==0){
-				break;
-			}
-		}
+        }
 		
 		salesOrderCanBeProcessed(salesOrder);
 		
